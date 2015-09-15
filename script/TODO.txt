@@ -1,0 +1,34 @@
+TODO :
+------
+
+* Handle the following error received from Algolia API after saving records :
+
+Saving 1000 records to index.../Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/algoliasearch-1.6.1/lib/algolia/index.rb:583:in `encode': "\xE2" from ASCII-8BIT to UTF-8 (Encoding::UndefinedConversionError)
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/algoliasearch-1.6.1/lib/algolia/index.rb:583:in `to_json'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/algoliasearch-1.6.1/lib/algolia/index.rb:583:in `batch'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/algoliasearch-1.6.1/lib/algolia/index.rb:270:in `save_objects'
+        from ./fetch_cities.rb:114:in `block (3 levels) in <main>'
+        from ./fetch_cities.rb:71:in `block (3 levels) in zip_to_records'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/rubyzip-1.1.7/lib/zip/ioextras/abstract_input_stream.rb:107:in `each_line'
+        from ./fetch_cities.rb:55:in `block (2 levels) in zip_to_records'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/rubyzip-1.1.7/lib/zip/entry_set.rb:42:in `call'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/rubyzip-1.1.7/lib/zip/entry_set.rb:42:in `block in each'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/rubyzip-1.1.7/lib/zip/entry_set.rb:41:in `each'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/rubyzip-1.1.7/lib/zip/entry_set.rb:41:in `each'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/rubyzip-1.1.7/lib/zip/central_directory.rb:182:in `each'
+        from ./fetch_cities.rb:51:in `block in zip_to_records'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/gems/2.0.0/gems/rubyzip-1.1.7/lib/zip/file.rb:99:in `open'
+        from ./fetch_cities.rb:49:in `zip_to_records'
+        from ./fetch_cities.rb:112:in `block (2 levels) in <main>'
+        from ./fetch_cities.rb:95:in `each'
+        from ./fetch_cities.rb:95:in `block in <main>'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/2.0.0/net/http.rb:852:in `start'
+        from /Users/tom/.rbenv/versions/2.0.0-p353/lib/ruby/2.0.0/net/http.rb:582:in `start'
+        from ./fetch_cities.rb:91:in `<main>'
+
+* Handle errors commented as TODOs in script
+
+* Enhance start process with a Y/N prompt
+
+DONE :
+------
