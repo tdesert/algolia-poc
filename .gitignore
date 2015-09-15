@@ -1,3 +1,9 @@
+# Project files
+
+script/tmp/
+
+# Android Studio ignored files
+
 # Built application files
 *.apk
 *.ap_
