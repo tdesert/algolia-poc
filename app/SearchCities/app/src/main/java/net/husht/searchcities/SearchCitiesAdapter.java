@@ -148,4 +148,11 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         return list;
     }
 
+    public City getCity(int position) {
+        if (mHits != null && mHits.size() > position) {
+            return mHits.get(position);
+        }
+        return null;
+    }
+
 }

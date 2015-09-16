@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,12 +32,24 @@ public class MainActivity extends Activity
     private GoogleApiClient mGoogleApiClient;
     private APIClient client;
     private Index index;
+
     private AutoCompleteTextView autoCompleteTextView;
+    private SearchCitiesAdapter mSearchCitiesAdapter;
+
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private CityDetailAdapter mCityDetailAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mCityDetailAdapter = new CityDetailAdapter();
+        mRecyclerView.setAdapter(mCityDetailAdapter);
 
         // Connect to Google Play Services API, further initialization is performed in the connection callbacks
         buildGoogleApiClient();
@@ -87,12 +101,13 @@ public class MainActivity extends Activity
         client = new APIClient(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
         autoCompleteTextView = (AutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
 
-        final SearchCitiesAdapter adapter = new SearchCitiesAdapter(this, R.layout.hit, client, mGoogleApiClient);
-        autoCompleteTextView.setAdapter(adapter);
+        mSearchCitiesAdapter = new SearchCitiesAdapter(this, R.layout.hit, client, mGoogleApiClient);
+        autoCompleteTextView.setAdapter(mSearchCitiesAdapter);
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "Clicked on city " + adapter.getItem(position));
+                Log.d(TAG, "Clicked on city " + mSearchCitiesAdapter.getItem(position));
+                mCityDetailAdapter.setCity(mSearchCitiesAdapter.getCity(position));
             }
         });
     }
