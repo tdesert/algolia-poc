@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 /**
  * Created by tom on 9/16/15.
  */
@@ -17,14 +19,16 @@ public class CityDetailAdapter extends RecyclerView.Adapter<CityDetailAdapter.Vi
     public static final int ROW_COUNTRY =       1;
     public static final int ROW_POPULATION =    2;
     public static final int ROW_TIMEZONE =      3;
-    public static final int ROW_DISTANCE =      4;
-    public static final int ROW_LOCATION =      5;
+    public static final int ROW_LOCATION =      4;
+    public static final int ROW_DISTANCE =      5;
     public static final int ROW_COUNT =         6;
 
+    private GoogleApiClient mGoogleApiClient;
     private City mCity;
 
-    public CityDetailAdapter() {
+    public CityDetailAdapter(GoogleApiClient googleApiClient) {
         super();
+        mGoogleApiClient = googleApiClient;
     }
 
     public void setCity(City city) {
@@ -49,26 +53,28 @@ public class CityDetailAdapter extends RecyclerView.Adapter<CityDetailAdapter.Vi
         TextView value = (TextView)viewHolder.getView().findViewById(R.id.row_value);
         switch (position) {
             case ROW_NAME:
-                label.setText("City: ");
+                label.setText("City");
                 value.setText(mCity.getName());
                 break;
             case ROW_COUNTRY:
-                label.setText("Country: ");
+                label.setText("Country");
                 value.setText(mCity.getCountry());
                 break;
             case ROW_POPULATION:
-                label.setText("Population: ");
+                label.setText("Population");
                 value.setText(mCity.getPopulation() + "");
                 break;
             case ROW_TIMEZONE:
-                label.setText("Timezone: ");
+                label.setText("Timezone");
                 value.setText(mCity.getTimezone());
                 break;
             case ROW_LOCATION:
-                label.setText("Coordinates: ");
+                label.setText("Coordinates");
+                value.setText(mCity.getFormatedLocation());
                 break;
             case ROW_DISTANCE:
-                label.setText("Distance: ");
+                label.setText("Distance");
+                value.setText(mCity.getFormattedDistance(mGoogleApiClient));
                 break;
 
         }

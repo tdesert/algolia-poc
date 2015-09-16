@@ -45,15 +45,15 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Connect to Google Play Services API, further initialization is performed in the connection callbacks
+        buildGoogleApiClient();
+
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mCityDetailAdapter = new CityDetailAdapter();
+        mCityDetailAdapter = new CityDetailAdapter(mGoogleApiClient);
         mRecyclerView.setAdapter(mCityDetailAdapter);
-
-        // Connect to Google Play Services API, further initialization is performed in the connection callbacks
-        buildGoogleApiClient();
     }
 
     @Override

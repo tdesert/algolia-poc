@@ -60,12 +60,14 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         mainTextView.setText(Html.fromHtml(city.getHighlightedName()));
         TextView countryTextView = (TextView)view.findViewById(R.id.hit_country);
         countryTextView.setText("Country: " + city.getCountry());
-        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (lastLocation != null) {
-            TextView distanceTextView = (TextView) view.findViewById(R.id.hit_distance);
-            float distance = lastLocation.distanceTo(city.getLocation()) / 1000;
-            distanceTextView.setText("Distance: " + String.format("%.2f", distance) + "km");
-        }
+        TextView distanceTextView = (TextView) view.findViewById(R.id.hit_distance);
+        distanceTextView.setText("Distance: " + city.getFormattedDistance(mGoogleApiClient));
+//        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+//        if (lastLocation != null) {
+//            TextView distanceTextView = (TextView) view.findViewById(R.id.hit_distance);
+//            float distance = lastLocation.distanceTo(city.getLocation()) / 1000;
+//            distanceTextView.setText("Distance: " + String.format("%.2f", distance) + "km");
+//        }
         return view;
     }
 

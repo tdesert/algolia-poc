@@ -3,6 +3,9 @@ package net.husht.searchcities;
 import android.location.Location;
 import android.util.Log;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,5 +76,18 @@ public class City {
             e.printStackTrace();
         }
         return highlightString;
+    }
+
+    public String getFormattedDistance(GoogleApiClient googleApiClient) {
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        if (lastLocation != null) {
+            float distance = lastLocation.distanceTo(getLocation()) / 1000;
+            return String.format("%.2f", distance) + " km";
+        }
+        return "N/A";
+    }
+
+    public String getFormatedLocation() {
+        return String.format("%f, %f", mLocation.getLatitude(), mLocation.getLongitude());
     }
 }
