@@ -71,12 +71,14 @@ def zip_to_records zip_path, limit = 1000
 						hash = {
 							objectID: data[GNM_ID],
 							name: data[GNM_NAME],
-							lat: data[GNM_LAT],
-							lng: data[GNM_LNG],
 							country: data[GNM_COUNTRY_CODE],
 							population: data[GNM_POPULATION],
 							timezone: data[GNM_TIMEZONE],
-							timestamp: data[GNM_TIMESTAMP]
+							timestamp: data[GNM_TIMESTAMP],
+							_geoloc: {
+								lat: data[GNM_LAT].to_f,
+								lng: data[GNM_LNG].to_f
+							}
 						}
 
 						records.push hash
