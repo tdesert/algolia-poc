@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    android:id="@+id/hit_textview"
-    style="@android:style/TextAppearance.Large"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textColor="#FF555555"
-    android:maxLines="1"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    android:padding="5dp">
+    <TextView android:id="@+id/hit_main"
+        style="@android:style/TextAppearance.Material.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF555555"
+        android:maxLines="1" />
+    <TextView android:id="@+id/hit_country"
+        style="@android:style/TextAppearance.Material.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#AAAAAA"
+        android:maxLines="1" />
+    <TextView android:id="@+id/hit_distance"
+        style="@android:style/TextAppearance.Material.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#AAAAAA"
+        android:maxLines="1" />
+</LinearLayout>

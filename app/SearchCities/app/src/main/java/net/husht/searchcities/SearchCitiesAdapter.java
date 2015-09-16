@@ -1,17 +1,23 @@
 package net.husht.searchcities;
 
 import android.content.Context;
+import android.location.Location;
+import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filterable;
 import android.widget.Filter;
+import android.widget.TextView;
 
 import com.algolia.search.saas.APIClient;
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,65 +32,89 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
 
     private static final String TAG = "SearchCitiesAdapter";
 
-    private JSONArray hits;
     private APIClient client;
     private Index index;
+    private int resourceId;
+    private GoogleApiClient mGoogleApiClient;
+    private ArrayList<City> mHits;
 
-    public SearchCitiesAdapter(Context context, int resource, APIClient apiClient) {
+    public SearchCitiesAdapter(Context context, int resource, APIClient apiClient, GoogleApiClient googleApiClient) {
         super(context, resource);
         client = apiClient;
         index = client.initIndex("dev_cities");
+        resourceId = resource;
+        mGoogleApiClient = googleApiClient;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(TAG, "getView: " + convertView);
-        return super.getView(position, convertView, parent);
+
+        View view = convertView;
+        if (view == null) {
+            LayoutInflater li = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = li.inflate(resourceId, null);
+        }
+
+        City city = mHits.get(position);
+        TextView mainTextView = (TextView)view.findViewById(R.id.hit_main);
+        mainTextView.setText(Html.fromHtml(city.getHighlightedName()));
+        TextView countryTextView = (TextView)view.findViewById(R.id.hit_country);
+        countryTextView.setText("Country: " + city.getCountry());
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (lastLocation != null) {
+            TextView distanceTextView = (TextView) view.findViewById(R.id.hit_distance);
+            float distance = lastLocation.distanceTo(city.getLocation()) / 1000;
+            distanceTextView.setText("Distance: " + String.format("%.2f", distance) + "km");
+        }
+        return view;
     }
 
     @Override
     public int getCount() {
-        if (hits != null) {
-            return hits.length();
+        if (mHits != null) {
+            return mHits.size();
         }
         return 0;
     }
 
     @Override
     public String getItem(int position) {
-        String item = null;
-        try {
-            JSONObject hit = hits.getJSONObject(position);
-            item = hit.getString("name");
-        } catch (JSONException e) {
-            Log.e(TAG, e.getLocalizedMessage());
-            e.printStackTrace();
+        if (mHits.size() > position) {
+            return mHits.get(position).getName();
         }
-        return item;
+        return null;
     }
 
     @Override
     public Filter getFilter() {
-        Filter filter = new Filter() {
+        return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
+                    Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                    if (lastLocation != null) {
+                        Log.d(TAG, "Last location: " + lastLocation.toString());
+                    }
+                    else {
+                        Log.d(TAG, "Geolocation search is unavailable on this device");
+                    }
+
+                    Query qry = new Query(constraint.toString());
+                    if (lastLocation != null) {
+                        qry = qry.aroundLatitudeLongitude((float)lastLocation.getLatitude(), (float)lastLocation.getLongitude(), 10000000);
+                    }
                     JSONObject searchResult = null;
                     try {
                         //We use synchronous search here as we already are in a background thread
-                        searchResult = index.search(new Query(constraint.toString()));
-                        hits = searchResult.getJSONArray("hits");
-                        filterResults.values = hits;
-                        filterResults.count = hits.length();
-                        Log.d(TAG, "Matched " + hits.length() + " results while searching for [" + constraint + "]");
+                        searchResult = index.search(qry);
                     } catch (AlgoliaException e) {
                         Log.e(TAG, "Error searching for [" + constraint + "]: " + e.getMessage());
                         e.printStackTrace();
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                        e.printStackTrace();
                     }
+                    mHits = searchResultsToArrayList(searchResult);
+                    filterResults.values = mHits;
+                    filterResults.count = mHits.size();
                 }
                 return filterResults;
             }
@@ -99,7 +129,23 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
                 }
             }
         };
-        return filter;
+    }
+
+    private ArrayList<City> searchResultsToArrayList(JSONObject results) {
+        ArrayList<City> list = new ArrayList<City>();
+        try {
+            JSONArray hits = results.getJSONArray("hits");
+            for (int i = 0; i < hits.length(); i++) {
+                JSONObject obj = hits.getJSONObject(i);
+                City city = new City(obj);
+                list.add(city);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage());
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
 }
