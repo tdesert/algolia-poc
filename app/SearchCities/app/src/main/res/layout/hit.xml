@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    android:id="@+id/hit_textview"
+    style="@android:style/TextAppearance.Large"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="#FF555555"
+    android:maxLines="1"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
