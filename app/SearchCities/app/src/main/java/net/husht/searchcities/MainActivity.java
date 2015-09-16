@@ -46,6 +46,7 @@ public class MainActivity extends Activity
         setContentView(R.layout.activity_main);
 
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mCityDetailAdapter = new CityDetailAdapter();
