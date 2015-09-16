@@ -32,17 +32,17 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
 
     private static final String TAG = "SearchCitiesAdapter";
 
-    private APIClient client;
-    private Index index;
-    private int resourceId;
+    private APIClient mAlgoliaClient;
+    private Index mAlgoliaIndex;
+    private int mResourceId;
     private GoogleApiClient mGoogleApiClient;
     private ArrayList<City> mHits;
 
     public SearchCitiesAdapter(Context context, int resource, APIClient apiClient, GoogleApiClient googleApiClient) {
         super(context, resource);
-        client = apiClient;
-        index = client.initIndex("dev_cities");
-        resourceId = resource;
+        mAlgoliaClient = apiClient;
+        mAlgoliaIndex = mAlgoliaClient.initIndex("dev_cities");
+        mResourceId = resource;
         mGoogleApiClient = googleApiClient;
     }
 
@@ -52,7 +52,7 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         View view = convertView;
         if (view == null) {
             LayoutInflater li = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = li.inflate(resourceId, null);
+            view = li.inflate(mResourceId, null);
         }
 
         City city = mHits.get(position);
@@ -62,12 +62,6 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         countryTextView.setText("Country: " + city.getCountry());
         TextView distanceTextView = (TextView) view.findViewById(R.id.hit_distance);
         distanceTextView.setText("Distance: " + city.getFormattedDistance(mGoogleApiClient));
-//        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-//        if (lastLocation != null) {
-//            TextView distanceTextView = (TextView) view.findViewById(R.id.hit_distance);
-//            float distance = lastLocation.distanceTo(city.getLocation()) / 1000;
-//            distanceTextView.setText("Distance: " + String.format("%.2f", distance) + "km");
-//        }
         return view;
     }
 
@@ -109,7 +103,7 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
                     JSONObject searchResult = null;
                     try {
                         //We use synchronous search here as we already are in a background thread
-                        searchResult = index.search(qry);
+                        searchResult = mAlgoliaIndex.search(qry);
                     } catch (AlgoliaException e) {
                         Log.e(TAG, "Error searching for [" + constraint + "]: " + e.getMessage());
                         e.printStackTrace();

@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
 import com.algolia.search.saas.APIClient;
-import com.algolia.search.saas.Index;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -30,10 +29,9 @@ public class MainActivity extends Activity
     private final static String ALGOLIA_APP_ID = "CC37YOB5YL";
 
     private GoogleApiClient mGoogleApiClient;
-    private APIClient client;
-    private Index index;
+    private APIClient mAlgoliaClient;
 
-    private AutoCompleteTextView autoCompleteTextView;
+    private AutoCompleteTextView mAutoCompleteTextView;
     private SearchCitiesAdapter mSearchCitiesAdapter;
 
     private RecyclerView mRecyclerView;
@@ -97,14 +95,14 @@ public class MainActivity extends Activity
     }
 
     private void initSearchEngine() {
-        if (client != null) return; //Initialization is already done
+        if (mAlgoliaClient != null) return; //Initialization is already done
 
-        client = new APIClient(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
-        autoCompleteTextView = (AutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
+        mAlgoliaClient = new APIClient(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
+        mAutoCompleteTextView = (AutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
 
-        mSearchCitiesAdapter = new SearchCitiesAdapter(this, R.layout.hit, client, mGoogleApiClient);
-        autoCompleteTextView.setAdapter(mSearchCitiesAdapter);
-        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mSearchCitiesAdapter = new SearchCitiesAdapter(this, R.layout.hit, mAlgoliaClient, mGoogleApiClient);
+        mAutoCompleteTextView.setAdapter(mSearchCitiesAdapter);
+        mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "Clicked on city " + mSearchCitiesAdapter.getItem(position));
@@ -112,7 +110,6 @@ public class MainActivity extends Activity
             }
         });
     }
-
 
     @Override
     public void onLocationChanged(Location location) {
