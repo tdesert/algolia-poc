@@ -27,7 +27,11 @@ GNM_ID				= 0
 GNM_NAME			= 2
 GNM_LAT				= 4
 GNM_LNG				= 5
+GNM_FEATURE_CLASS	= 6
+GNM_FEATURE_CODE	= 7
 GNM_COUNTRY_CODE	= 8
+GNM_POPULATION		= 14
+GNM_ELEVATION		= 15
 GNM_TIMEZONE		= 17
 GNM_TIMESTAMP		= 18
 
@@ -50,18 +54,27 @@ def zip_to_records zip_path, limit = 1000
 		found = false
 		zip_file.each do |f|
 			if f.name == searched_txt_file and f.file? then
-				# puts "Found #{f.name} in #{zip_path}"
 				found = true
 				f.get_input_stream.each_line do |line|
 					line.strip!
 					data = line.split("\t")
-					if data.length >= GNM_TIMESTAMP + 1
+
+					# if (data[GNM_NAME] == "Mayenne") then
+					# 	puts "Found MAYENNE !! : #{data}"
+					# end
+
+					if data.length >= GNM_TIMESTAMP + 1 && 
+						data[GNM_FEATURE_CLASS] == 'P' && # P means feature is a city or village
+						['PPL', 'PPLC', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4'].include?(data[GNM_FEATURE_CODE]) && # PPL* means feature is a populated place
+						data[GNM_POPULATION].to_i > 0 # We are only interested in features that actually contain inhabitants
+
 						hash = {
 							objectID: data[GNM_ID],
 							name: data[GNM_NAME],
 							lat: data[GNM_LAT],
 							lng: data[GNM_LNG],
 							country: data[GNM_COUNTRY_CODE],
+							population: data[GNM_POPULATION],
 							timezone: data[GNM_TIMEZONE],
 							timestamp: data[GNM_TIMESTAMP]
 						}
@@ -71,8 +84,6 @@ def zip_to_records zip_path, limit = 1000
 							yield records
 							records.clear
 						end
-					else
-						puts "WARNING: invalid data received in #{data}, some fields are missing"
 					end
 				end
 			end
@@ -97,6 +108,13 @@ Net::HTTP.start(GEONAMES_DOMAIN) do |http|
     	zip_path = "#{GEONAMES_PATH}#{zip_file[0]}"
     	download_path = "#{TMP_DIR}/#{zip_file[0]}"
 
+    	# DELETE ME
+    	if zip_file[0] != "FR.zip" then
+    		puts "Ignoring #{zip_file}..."
+    		next 
+    	end
+    	# END DELETE ME
+
 		print "Downloading http://#{GEONAMES_DOMAIN}#{zip_path}..."
     	File.open(download_path, "w") do |f|
     		http.request_get(zip_path) do |resp|
@@ -110,6 +128,7 @@ Net::HTTP.start(GEONAMES_DOMAIN) do |http|
 
         puts "Extracting data from #{download_path}..."
         zip_to_records(download_path) do |records|
+        	# puts "Found cities: #{records}"
         	print "\tSaving #{records.length} records to index..."
         	index.save_objects records
         	puts "Done"
