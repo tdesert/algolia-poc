@@ -18,6 +18,9 @@ TMP_DIR | Directory where temporary data retrieved from geonames services should
 
 ## Searching Cities
 
+
+![Smaller icon](https://raw.githubusercontent.com/tdesert/algolia-poc/master/preview.gif)
+
 <br />
 **Prerequisities**
 
