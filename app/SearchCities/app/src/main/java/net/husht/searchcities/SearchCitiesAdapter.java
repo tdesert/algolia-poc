@@ -57,9 +57,9 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
 
         City city = mHits.get(position);
         TextView mainTextView = (TextView)view.findViewById(R.id.hit_main);
-        mainTextView.setText(Html.fromHtml(city.getHighlightedName()));
+        mainTextView.setText(Html.fromHtml(city.getHighlightedProperty("name")));
         TextView countryTextView = (TextView)view.findViewById(R.id.hit_country);
-        countryTextView.setText("Country: " + city.getCountry());
+        countryTextView.setText(Html.fromHtml("Country: " + city.getHighlightedProperty("country")));
         TextView distanceTextView = (TextView) view.findViewById(R.id.hit_distance);
         distanceTextView.setText("Distance: " + city.getFormattedDistance(mGoogleApiClient));
 

@@ -66,11 +66,27 @@ public class City {
         return mLocation;
     }
 
-    public String getHighlightedName() {
+//    public String getHighlightedName() {
+//        String highlightString = null;
+//        try {
+//            JSONObject highlight = mHit.getJSONObject("_highlightResult");
+//            highlightString = highlight.getJSONObject("name").getString("value");
+//        } catch (JSONException e) {
+//            Log.e(TAG, e.getLocalizedMessage());
+//            e.printStackTrace();
+//        }
+//        return highlightString;
+//    }
+//
+//    public String getHighlightedCountry() {
+//
+//    }
+
+    public String getHighlightedProperty(String property) {
         String highlightString = null;
         try {
             JSONObject highlight = mHit.getJSONObject("_highlightResult");
-            highlightString = highlight.getJSONObject("name").getString("value");
+            highlightString = highlight.getJSONObject(property).getString("value");
         } catch (JSONException e) {
             Log.e(TAG, e.getLocalizedMessage());
             e.printStackTrace();
