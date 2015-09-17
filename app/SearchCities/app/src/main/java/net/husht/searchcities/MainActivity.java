@@ -116,7 +116,9 @@ public class MainActivity extends Activity
     }
 
 
-    // Permissions callbacks
+    /*
+     * Permissions callbacks
+     */
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

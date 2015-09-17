@@ -109,17 +109,5 @@ public class CityDetailAdapter extends RecyclerView.Adapter<CityDetailAdapter.Vi
         }
     }
 
-//    public static class TextViewHolder extends ViewHolder {
-//        private TextView mTextView;
-//        public TextViewHolder(TextView textView) {
-//            super(textView);
-//            mTextView = textView;
-//        }
-//
-//        public TextView getTextView() {
-//            return mTextView;
-//        }
-//    }
-
 
 }

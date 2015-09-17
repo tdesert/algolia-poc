@@ -62,6 +62,7 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         countryTextView.setText("Country: " + city.getCountry());
         TextView distanceTextView = (TextView) view.findViewById(R.id.hit_distance);
         distanceTextView.setText("Distance: " + city.getFormattedDistance(mGoogleApiClient));
+
         return view;
     }
 
@@ -108,9 +109,9 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
                         Log.e(TAG, "Error searching for [" + constraint + "]: " + e.getMessage());
                         e.printStackTrace();
                     }
-                    mHits = searchResultsToArrayList(searchResult);
-                    filterResults.values = mHits;
-                    filterResults.count = mHits.size();
+                    ArrayList<City> hits = searchResultsToArrayList(searchResult);
+                    filterResults.values = hits;
+                    filterResults.count = hits.size();
                 }
                 return filterResults;
             }
@@ -118,6 +119,7 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results != null && results.count > 0) {
+                    mHits = (ArrayList<City>)results.values;
                     notifyDataSetChanged();
                 }
                 else {
