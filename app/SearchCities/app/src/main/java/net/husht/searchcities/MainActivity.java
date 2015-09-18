@@ -30,9 +30,6 @@ public class MainActivity extends Activity
     private final static String TAG = "MainActivity";
     private final static int PERMISSIONS_REQUEST_LOCATION_ID = 42;
 
-    private final static String ALGOLIA_API_KEY = "08819e0217baeb114f3026c444009ae9";
-    private final static String ALGOLIA_APP_ID = "CC37YOB5YL";
-
     private GoogleApiClient mGoogleApiClient;
     private APIClient mAlgoliaClient;
 
@@ -51,6 +48,7 @@ public class MainActivity extends Activity
         // Connect to Google Play Services API, further initialization is performed in the connection callbacks
         buildGoogleApiClient();
 
+        //Setup the recycler view that will be used to display a selected city from search results list
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         mLayoutManager = new LinearLayoutManager(this);
@@ -82,6 +80,7 @@ public class MainActivity extends Activity
 
     @Override
     public void onConnected(Bundle bundle) {
+        //Setup access to GPS information once connected to Google Play Services API
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION_ID);
         } else {
@@ -96,18 +95,21 @@ public class MainActivity extends Activity
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        //Failed to connect to Google Play Services API. Search engine will not use geosearch.
         initSearchEngine();
     }
 
     private void initSearchEngine() {
         if (mAlgoliaClient != null) return; //Initialization is already done
 
+        //Setup Algolia Client
         String apiKey = getString(R.string.algolia_api_key);
         String appId = getString(R.string.algolia_app_id);
         mAlgoliaClient = new APIClient(appId, apiKey);
-        mAutoCompleteTextView = (AutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
-
         Index index = mAlgoliaClient.initIndex(getString(R.string.algolia_cities_index));
+
+        //
+        mAutoCompleteTextView = (AutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
         mSearchCitiesAdapter = new SearchCitiesAdapter(this, R.layout.hit, index, mGoogleApiClient);
         mAutoCompleteTextView.setAdapter(mSearchCitiesAdapter);
         mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

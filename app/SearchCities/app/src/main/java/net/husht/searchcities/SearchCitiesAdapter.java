@@ -87,18 +87,16 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
-                    Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                    if (lastLocation != null) {
-                        Log.d(TAG, "Last location: " + lastLocation.toString());
-                    }
-                    else {
-                        Log.d(TAG, "Geolocation search is unavailable on this device");
-                    }
 
+                    //Setup a query
+                    Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                     Query qry = new Query(constraint.toString());
                     if (lastLocation != null) {
+                        //If GPS coordinates of the device are reachable, we use geosearch
                         qry = qry.aroundLatitudeLongitude((float)lastLocation.getLatitude(), (float)lastLocation.getLongitude(), 10000000);
                     }
+
+                    //Perform search
                     JSONObject searchResult = null;
                     try {
                         //We use synchronous search here as we already are in a background thread
@@ -127,6 +125,7 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         };
     }
 
+    //Convert search results retrieved as JSONObject from Algolia API to an ArrayList of City objects
     private ArrayList<City> searchResultsToArrayList(JSONObject results) {
         ArrayList<City> list = new ArrayList<City>();
         try {
@@ -144,6 +143,7 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         return list;
     }
 
+    //Return a City object from current results set at given index
     public City getCity(int position) {
         if (mHits != null && mHits.size() > position) {
             return mHits.get(position);

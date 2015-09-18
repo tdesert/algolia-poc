@@ -13,8 +13,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
  */
 public class CityDetailAdapter extends RecyclerView.Adapter<CityDetailAdapter.ViewHolder> {
 
-    public static final int VIEW_TYPE_TEXT = 0;
-
     public static final int ROW_NAME =          0;
     public static final int ROW_COUNTRY =       1;
     public static final int ROW_POPULATION =    2;
@@ -38,13 +36,10 @@ public class CityDetailAdapter extends RecyclerView.Adapter<CityDetailAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_TEXT) {
-            View v = (View)LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.city_detail_cell, parent, false);
-            ViewHolder vh = new ViewHolder(v);
-            return vh;
-        }
-        return null;
+        View v = (View)LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.city_detail_cell, parent, false);
+        ViewHolder vh = new ViewHolder(v);
+        return vh;
     }
 
     @Override
@@ -86,11 +81,6 @@ public class CityDetailAdapter extends RecyclerView.Adapter<CityDetailAdapter.Vi
             return ROW_COUNT;
         }
         return 0;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return VIEW_TYPE_TEXT;
     }
 
     // Provide a reference to the views for each data item

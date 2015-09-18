@@ -21,7 +21,7 @@ public class City {
     private int mPopulation;
     private String mTimezone;
     private Location mLocation;
-    private JSONObject mHit;
+    private JSONObject mJsonObject;
 
     public City(JSONObject jsonObject) {
         try {
@@ -30,6 +30,8 @@ public class City {
             mCountry = jsonObject.getString("country");
             mPopulation = jsonObject.getInt("population");
             mTimezone = jsonObject.getString("timezone");
+
+            //Convert _geoloc field to Location object
             JSONObject geoloc = jsonObject.getJSONObject("_geoloc");
             mLocation = new Location("");
             mLocation.setLatitude(geoloc.getDouble("lat"));
@@ -39,7 +41,7 @@ public class City {
             e.printStackTrace();
         }
 
-        mHit = jsonObject;
+        mJsonObject = jsonObject;
     }
     
     public String getObjectID() {
@@ -66,27 +68,16 @@ public class City {
         return mLocation;
     }
 
-//    public String getHighlightedName() {
-//        String highlightString = null;
-//        try {
-//            JSONObject highlight = mHit.getJSONObject("_highlightResult");
-//            highlightString = highlight.getJSONObject("name").getString("value");
-//        } catch (JSONException e) {
-//            Log.e(TAG, e.getLocalizedMessage());
-//            e.printStackTrace();
-//        }
-//        return highlightString;
-//    }
-//
-//    public String getHighlightedCountry() {
-//
-//    }
-
+    //Return highlighted property as a HTML string
     public String getHighlightedProperty(String property) {
         String highlightString = null;
         try {
-            JSONObject highlight = mHit.getJSONObject("_highlightResult");
-            highlightString = highlight.getJSONObject(property).getString("value");
+            JSONObject highlight = mJsonObject.getJSONObject("_highlightResult");
+            if (!highlight.has(property)) {
+                highlightString = mJsonObject.getString(property);
+            } else {
+                highlightString = highlight.getJSONObject(property).getString("value");
+            }
         } catch (JSONException e) {
             Log.e(TAG, e.getLocalizedMessage());
             e.printStackTrace();
@@ -94,6 +85,7 @@ public class City {
         return highlightString;
     }
 
+    //Return estimated distance as a formated string (XX km)
     public String getFormattedDistance(GoogleApiClient googleApiClient) {
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         if (lastLocation != null) {
