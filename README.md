@@ -5,9 +5,9 @@ POC using Algolia API under Android
 ## Indexing cities
 Use `script/fetch_cities.rb` to populate your Algolia index with a list of cities retrieved from [http://geonames.org](http://geonames.org):
 
-	./fetch_cities.rb
+	./script/fetch_cities.rb
 	
-Edit the following configuration constants in the script:
+You can edit the following configuration constants in the script:
 
 Constant | Description
 ------------ | ------------- 
@@ -18,11 +18,20 @@ TMP_DIR | Directory where temporary data retrieved from geonames services should
 
 ## Searching Cities
 
+The **SearchCities** android application uses the [Algolia API Client](https://github.com/algolia/algoliasearch-client-android) to browse indexed cities around the world. The results are sorted by proximity when the GPS is enabled on the device.
+
 
 ![Smaller icon](https://raw.githubusercontent.com/tdesert/algolia-poc/master/preview.gif)
+
+### Prerequisities
+
+* The project was built on Android Studio v1.3.2
+* Android API 22 or higher
+* If you run the project on an emulator, you should have the [Google Play Services](https://developers.google.com/android/guides/overview) installed on it
+* Please check the following [guide](http://developer.android.com/guide/topics/location/strategies.html#MockData) to simulate a GPS location on your emulated device
  
 
-Use the Android application **SearchCities** in the `app/` folder to browse your index.
+### Setup
 
 Import the project in Android Studio, then hit *Run*.
 
@@ -38,10 +47,4 @@ algolia_api_key | Algolia API key retrieved from your account
 algolia_cities_index | Name of the Algolia's index to browse
 
 <br />
-**Prerequisities**
-
-* The project was built on Android Studio v1.3.2
-* Android API 22 or higher
-* If run the project on an emulator, you should have the [Google Play Services](https://developers.google.com/android/guides/overview) apk installed on it
-* Please check the following [guide](http://developer.android.com/guide/topics/location/strategies.html#MockData) to simulate a GPS location on your emulated device
 
