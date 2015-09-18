@@ -32,16 +32,14 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
 
     private static final String TAG = "SearchCitiesAdapter";
 
-    private APIClient mAlgoliaClient;
     private Index mAlgoliaIndex;
     private int mResourceId;
     private GoogleApiClient mGoogleApiClient;
     private ArrayList<City> mHits;
 
-    public SearchCitiesAdapter(Context context, int resource, APIClient apiClient, GoogleApiClient googleApiClient) {
+    public SearchCitiesAdapter(Context context, int resource, Index index, GoogleApiClient googleApiClient) {
         super(context, resource);
-        mAlgoliaClient = apiClient;
-        mAlgoliaIndex = mAlgoliaClient.initIndex("dev_cities");
+        mAlgoliaIndex = index;
         mResourceId = resource;
         mGoogleApiClient = googleApiClient;
     }

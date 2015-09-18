@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
 import com.algolia.search.saas.APIClient;
+import com.algolia.search.saas.Index;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -101,10 +102,13 @@ public class MainActivity extends Activity
     private void initSearchEngine() {
         if (mAlgoliaClient != null) return; //Initialization is already done
 
-        mAlgoliaClient = new APIClient(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
+        String apiKey = getString(R.string.algolia_api_key);
+        String appId = getString(R.string.algolia_app_id);
+        mAlgoliaClient = new APIClient(appId, apiKey);
         mAutoCompleteTextView = (AutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
 
-        mSearchCitiesAdapter = new SearchCitiesAdapter(this, R.layout.hit, mAlgoliaClient, mGoogleApiClient);
+        Index index = mAlgoliaClient.initIndex(getString(R.string.algolia_cities_index));
+        mSearchCitiesAdapter = new SearchCitiesAdapter(this, R.layout.hit, index, mGoogleApiClient);
         mAutoCompleteTextView.setAdapter(mSearchCitiesAdapter);
         mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
