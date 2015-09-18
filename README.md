@@ -20,6 +20,22 @@ TMP_DIR | Directory where temporary data retrieved from geonames services should
 
 
 ![Smaller icon](https://raw.githubusercontent.com/tdesert/algolia-poc/master/preview.gif)
+ 
+
+Use the Android application **SearchCities** in the `app/` folder to browse your index.
+
+Import the project in Android Studio, then hit *Run*.
+
+On Android M, when launched for the first time, the application will prompt you for GPS geolocation permission.<br />
+Tap *Allow* to enable the geosearch features from Algolia services.
+
+You can configure the app the same way you configured the import script by editing `app/SearchCities/app/src/main/res/values/config.xml`:
+
+Key | Description
+------------ | ------------- 
+algolia_app_id | Application identifier retrieved from your Algolia account 
+algolia_api_key | Algolia API key retrieved from your account
+algolia_cities_index | Name of the Algolia's index to browse
 
 <br />
 **Prerequisities**
@@ -28,13 +44,4 @@ TMP_DIR | Directory where temporary data retrieved from geonames services should
 * Android API 22 or higher
 * If run the project on an emulator, you should have the [Google Play Services](https://developers.google.com/android/guides/overview) apk installed on it
 * Please check the following [guide](http://developer.android.com/guide/topics/location/strategies.html#MockData) to simulate a GPS location on your emulated device
- 
 
-Use the Android application **SearchCities** in the `app/` folder to browse your index.
-
-Import the project in Android Studio, then hit *Run*.
-
-When launched for the first time, the application will prompt you for GPS geolocation permission.
-
-Tap *Allow* to enable the geosearch features from Algolia services.<br />
-If GPS permission is denied, the application will only use regular search for browsing cities by their names.
