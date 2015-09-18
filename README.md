@@ -3,7 +3,7 @@ POC using Algolia API under Android
 
 
 ## Indexing cities
-Use the `script/fetch_cities.rb` script to populate your Algolia index with a list of cities retrieved from [http://geonames.org](http://geonames.org):
+Use `script/fetch_cities.rb` to populate your Algolia index with a list of cities retrieved from [http://geonames.org](http://geonames.org):
 
 	./fetch_cities.rb
 	
