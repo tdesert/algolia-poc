@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="algolia_api_key">08819e0217baeb114f3026c444009ae9</string>
+    <string name="algolia_app_id">CC37YOB5YL</string>
+    <string name="algolia_cities_index">dev_cities</string>
+</resources>
