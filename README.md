@@ -12,8 +12,8 @@ You can edit the following configuration constants in the script:
 Constant | Description
 ------------ | ------------- 
 ALGOLIA_APP_ID | Application identifier retrieved from your Algolia account 
-ALGOLIA_API_KEY | Algolia API key retrieved from your account
-ALGOLIA_INDEX_NAME | Name of the Algolia's index that yould be populated by the script
+ALGOLIA_API_KEY | Algolia API key retrieved from your Algolia account
+ALGOLIA_INDEX_NAME | Name of the Algolia's index that should be populated by the script
 TMP_DIR | Directory where temporary data retrieved from geonames services should be saved
 
 ## Searching Cities
@@ -38,12 +38,12 @@ Import the project in Android Studio, then hit *Run*.
 On Android M, when launched for the first time, the application will prompt you for GPS geolocation permission.<br />
 Tap *Allow* to enable the geosearch features from Algolia services.
 
-You can configure the app the same way you configured the import script by editing `app/SearchCities/app/src/main/res/values/config.xml`:
+You can configure the app the same way you configured the indexing script by editing `app/SearchCities/app/src/main/res/values/config.xml`:
 
 Key | Description
 ------------ | ------------- 
 algolia_app_id | Application identifier retrieved from your Algolia account 
-algolia_api_key | Algolia API key retrieved from your account
+algolia_api_key | Algolia API key retrieved from your Algolia account
 algolia_cities_index | Name of the Algolia's index to browse
 
 <br />
