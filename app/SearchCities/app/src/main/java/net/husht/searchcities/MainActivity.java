@@ -1,11 +1,9 @@
 package net.husht.searchcities;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -14,7 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
+import android.widget.ProgressBar;
 
 import com.algolia.search.saas.APIClient;
 import com.algolia.search.saas.Index;
@@ -33,7 +31,7 @@ public class MainActivity extends Activity
     private GoogleApiClient mGoogleApiClient;
     private APIClient mAlgoliaClient;
 
-    private AutoCompleteTextView mAutoCompleteTextView;
+    private DelayedAutoCompleteTextView mAutoCompleteTextView;
     private SearchCitiesAdapter mSearchCitiesAdapter;
 
     private RecyclerView mRecyclerView;
@@ -45,16 +43,17 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Connect to Google Play Services API, further initialization is performed in the connection callbacks
+        // Connect to Google Play Services API. Further initialization is performed in the connection callbacks.
         buildGoogleApiClient();
 
-        //Setup the recycler view that will be used to display a selected city from search results list
+        //Setup the recycler view that will be used to display a selected city details from search results
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mCityDetailAdapter = new CityDetailAdapter(mGoogleApiClient);
         mRecyclerView.setAdapter(mCityDetailAdapter);
+
     }
 
     @Override
@@ -78,6 +77,35 @@ public class MainActivity extends Activity
                 .build();
     }
 
+    private void initSearchEngine() {
+        if (mAlgoliaClient != null) return; //Initialization is already done
+
+        //Setup Algolia Client
+        String apiKey = getString(R.string.algolia_api_key);
+        String appId = getString(R.string.algolia_app_id);
+        mAlgoliaClient = new APIClient(appId, apiKey);
+        Index index = mAlgoliaClient.initIndex(getString(R.string.algolia_cities_index));
+
+        //Setup autocomplete text view to perform searches based on user input
+        mAutoCompleteTextView = (DelayedAutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
+        mSearchCitiesAdapter = new SearchCitiesAdapter(this, R.layout.hit, index, mGoogleApiClient);
+        mAutoCompleteTextView.setAdapter(mSearchCitiesAdapter);
+        mAutoCompleteTextView.setLoadingIndicator((ProgressBar) findViewById(R.id.autoCompleteLoadingIndicator));
+        mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "Clicked on city " + mSearchCitiesAdapter.getItem(position));
+                mCityDetailAdapter.setCity(mSearchCitiesAdapter.getCity(position));
+            }
+        });
+    }
+
+    /**
+     * Google Play Services API connection callbacks.
+     * When running on Android API >= 23, we need to explicitly request permissions to access GPS coordinates
+     * of the device.
+     *
+     */
     @Override
     public void onConnected(Bundle bundle) {
         //Setup access to GPS information once connected to Google Play Services API
@@ -86,6 +114,8 @@ public class MainActivity extends Activity
         } else {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, new LocationRequest(), this);
         }
+
+        //Initialize Algolia API client and autocomplete text view
         initSearchEngine();
     }
 
@@ -99,32 +129,9 @@ public class MainActivity extends Activity
         initSearchEngine();
     }
 
-    private void initSearchEngine() {
-        if (mAlgoliaClient != null) return; //Initialization is already done
-
-        //Setup Algolia Client
-        String apiKey = getString(R.string.algolia_api_key);
-        String appId = getString(R.string.algolia_app_id);
-        mAlgoliaClient = new APIClient(appId, apiKey);
-        Index index = mAlgoliaClient.initIndex(getString(R.string.algolia_cities_index));
-
-        //
-        mAutoCompleteTextView = (AutoCompleteTextView)findViewById(R.id.autoCompleteTextView);
-        mSearchCitiesAdapter = new SearchCitiesAdapter(this, R.layout.hit, index, mGoogleApiClient);
-        mAutoCompleteTextView.setAdapter(mSearchCitiesAdapter);
-        mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "Clicked on city " + mSearchCitiesAdapter.getItem(position));
-                mCityDetailAdapter.setCity(mSearchCitiesAdapter.getCity(position));
-            }
-        });
-    }
-
     @Override
     public void onLocationChanged(Location location) {
     }
-
 
     /*
      * Permissions callbacks
@@ -140,4 +147,5 @@ public class MainActivity extends Activity
                     break;
         }
     }
+
 }

@@ -12,7 +12,6 @@ import android.widget.Filterable;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.algolia.search.saas.APIClient;
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
@@ -44,6 +43,10 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         mGoogleApiClient = googleApiClient;
     }
 
+    /**
+     * Returns a View matching a row from current search results at given position, displayed in
+     * the AutoCompleteTextView results list.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -80,9 +83,16 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         return null;
     }
 
+    /**
+     * Setup a Filter object that performs Algolia API calls based on user input.
+     */
     @Override
     public Filter getFilter() {
         return new Filter() {
+
+            /**
+             * Called on a worker thread when the user has typed some text in the AutoCompleteTextView
+             */
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
@@ -112,6 +122,9 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
                 return filterResults;
             }
 
+            /**
+             * Called on UI thread when performFiltering has returned
+             */
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results != null && results.count > 0) {
@@ -143,7 +156,7 @@ public class SearchCitiesAdapter extends ArrayAdapter<String> implements Filtera
         return list;
     }
 
-    //Return a City object from current results set at given index
+    //Return a City object from current search results at given index
     public City getCity(int position) {
         if (mHits != null && mHits.size() > position) {
             return mHits.get(position);
