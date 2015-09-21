@@ -8,7 +8,7 @@
         style="@android:style/TextAppearance.Material.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#AAAAAA"
+        android:textColor="#333333"
         android:maxLines="1"
         android:textStyle="bold" />
 
@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:textColor="#AAAAAA"
+        android:textColor="#333333"
         android:maxLines="1" />
 
 </LinearLayout>
